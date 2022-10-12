@@ -1,21 +1,16 @@
 # tiptap-extension-image-freely
 
-Image upload extension for tiptap, support image preview.
+Image extension for tiptap
+
+**Use this library without using `@tiptap/extension-image`**
 
 [中文readme](./README.zh.md)
 
-## Introduction
+- Support picture resize and rotation
+- When the image fails to load, it can be processed freely, such as displaying a default image
+- Support to expand other functions 
 
-Upload support:
-
-- File type data upload (such as the image selected by input:file)
-- Drag and drop the uploaded file
-- Screenshot in the clipboard
-- Third party pictures in the clipboard (the image url will be read and converted to File)
-
-Image preview（.image-placeholder）：
-
-- The base64 of the image is used as the preview by default
+![eg](./doc/doc.png)
 
 ## Instalation
 
@@ -26,32 +21,58 @@ Image preview（.image-placeholder）：
 Add it as any extension in `useEditor()`
 
 ```ts
-import { ImageUploadExtension, ImagePlaceholder } from 'tiptap-extension-image-freely'
+import Image from 'tiptap-extension-image-freely'
 
   extensions: {
-    ImageUploadExtension.configure({
-      acceptMimes: ['image/jpeg', 'image/gif', 'image/png', 'image/jpg'],
-      upload: (file: File, id: string) => {
-        // your upload ajax
-        return Promise.resolve('https://avatars.githubusercontent.com/u/112541088')
+    Image.configure({
+      inline: false,
+      onExtraCreated: (eleExtra: HTMLElement, imgRef: HTMLImageElement) => {
+        eleExtra.innerHTML = 'something else'
       },
-    }),
-    ImagePlaceholder.configure({
-      inline: false
+      onError: (eleExtra: HTMLElement) => {
+        eleExtra.innerHTML = '<errorIcon />'
+      }
     }),
 ```
 
-### ImageUploadExtension Configuration
+### Image Configuration
 
 ```ts
-export interface ImageUploaderPluginOptions {
-  /** Image types allowed to upload */
-  acceptMimes: string[];
+export interface ImageOptions {
+  // same as @tiptap/extension-image
+  inline: boolean
+  allowBase64?: boolean
+  HTMLAttributes?: Record<string, any>
+  // Is support resize, default true
+  resize?: boolean
+  // Resize icon, the default is a small black square
+  resizeIcon?: any
+  // Is support rotate, default true
+  rotate?: boolean
+  // Rotate icon
+  rotateIcon?: any
   /**
-   * Image File upload function
-   * @param {File} file - File waiting to be uploaded
-   * @param {string} id - Automatically generated unique key
+   * expand other functions
+   * @param {HTMLElement} eleExtra - HTMLDivElement
+   * @param {HTMLImageElement} imgRef - Reference of image
    */
-  upload(file: File | string, id: string): Promise<string>;
+  onExtraCreated?: (eleExtra: HTMLElement, imgRef: HTMLImageElement) => void
+  /**
+   * Callback for image loading failure
+   * @param {HTMLElement} eleExtra - HTMLDivElement
+   */
+  onError?: (eleExtra: HTMLElement) => void
 }
+```
+
+## Commands
+
+```js
+editor.commands.setImage({ 
+  src: 'https://xxxx/xx.png', 
+  alt: 'alt',
+  title: 'title',
+  width: '400px',
+  rotate: '-180'
+})
 ```

@@ -1,15 +1,18 @@
 {
   "name": "tiptap-extension-image-freely",
   "author": "coolswitch",
-  "description": "Image upload extension for tiptap, support image preview（tiptap的图片上传扩展，支持图片预览或占位）",
+  "description": "Image extension for tiptap, support resize or rotation（tiptap的图片扩展，支持图片调整大小和旋转）",
   "version": "0.1.0",
   "homepage": "https://github.com/coolswitch/tiptap-extension-image-freely#readme",
   "keywords": [
     "tiptap",
     "tiptap extension",
-    "tiptap extension upload",
+    "tiptap extension resize",
+    "tiptap extension rotate",
     "tiptap extension img",
-    "tiptap extension image"
+    "tiptap extension image",
+    "tiptap image resize",
+    "tiptap image rotate"
   ],
   "license": "MIT",
   "engines": {
