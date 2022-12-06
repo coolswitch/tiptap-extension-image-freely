@@ -2,7 +2,7 @@
   "name": "tiptap-extension-image-freely",
   "author": "coolswitch",
   "description": "Image extension for tiptap, support resize or rotation（tiptap的图片扩展，支持图片调整大小和旋转）",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/coolswitch/tiptap-extension-image-freely#readme",
   "keywords": [
     "tiptap",

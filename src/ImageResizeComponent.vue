@@ -10,46 +10,48 @@
 </template>
 
 <script setup>
-import { inject, ref, computed, watch } from 'vue'
+import { inject, ref, computed, watch } from 'vue';
 
-const tiptapProps = inject('tiptapProps')
+const tiptapProps = inject('tiptapProps');
 const props = defineProps({
-  imgRef: { type: Object, required: true }
-})
-const options = computed(() => tiptapProps.extension.options)
-const resizeRef = ref(null)
-const originX = ref(0)
-const originW = ref(0)
-const aspectRatio = props.imgRef.naturalWidth / props.imgRef.naturalHeight
+  imgRef: { type: Object, required: true },
+});
+const options = computed(() => tiptapProps.extension.options);
+const resizeRef = ref(null);
+const originX = ref(0);
+const originW = ref(0);
+const aspectRatio = props.imgRef.naturalWidth / props.imgRef.naturalHeight;
 
 const handlerResize = (e) => {
-  if (e.button !== 0) return // 非鼠标左键
-  removeEventListener()
+  if (e.button !== 0) return; // 非鼠标左键
+  removeEventListener();
 
-  const rect = e.target.getBoundingClientRect()
-  originX.value = rect.x
-  originW.value = props.imgRef.clientWidth
-  document.body.addEventListener('mousemove', onMouseMove)
-  document.body.addEventListener('mouseup', removeEventListener, { once: true })
-}
+  const rect = e.target.getBoundingClientRect();
+  originX.value = rect.x;
+  originW.value = props.imgRef.clientWidth;
+  document.body.addEventListener('mousemove', onMouseMove);
+  document.body.addEventListener('mouseup', removeEventListener, { once: true });
+  document.body.addEventListener('mouseleave', removeEventListener, { once: true });
+};
 function onMouseMove(e) {
-  const maxW = resizeRef.value.parentElement.parentElement.clientWidth
-  const newW = originW.value - (originX.value - e.pageX)
-  const isSwitchWH = [-90, -270].includes(tiptapProps.node.attrs.rotate)
+  const maxW = resizeRef.value.parentElement.parentElement.clientWidth;
+  const newW = originW.value - (originX.value - e.pageX);
+  const isSwitchWH = [-90, -270].includes(tiptapProps.node.attrs.rotate);
   if (!isSwitchWH) {
-    tiptapProps.updateAttributes({ width: `${newW > maxW ? maxW : newW}px` })
+    tiptapProps.updateAttributes({ width: `${newW > maxW ? maxW : newW}px` });
   } else {
-    const newH = parseInt(newW / aspectRatio)
-    const maxH = parseInt(maxW * aspectRatio)
-    tiptapProps.updateAttributes({ width: `${newH > maxW ? maxH : newW}px` })
+    const newH = parseInt(newW / aspectRatio);
+    const maxH = parseInt(maxW * aspectRatio);
+    tiptapProps.updateAttributes({ width: `${newH > maxW ? maxH : newW}px` });
   }
 }
 function removeEventListener() {
-  document.body.removeEventListener('mousemove', onMouseMove)
-  document.body.removeEventListener('mouseup', removeEventListener)
+  document.body.removeEventListener('mousemove', onMouseMove);
+  document.body.removeEventListener('mouseup', removeEventListener);
+  document.body.removeEventListener('mouseleave', removeEventListener);
 }
 
-watch(() => tiptapProps.selected, removeEventListener)
+// watch(() => tiptapProps.selected, removeEventListener)
 </script>
 
 <style lang="scss">
