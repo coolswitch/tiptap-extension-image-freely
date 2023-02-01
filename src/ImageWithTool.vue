@@ -42,7 +42,7 @@
     <!-- 旋转 -->
     <ImageRotateComponent v-if="isLoaded && options.rotate" :imgRef="imgRef" />
 
-    <div style="width: 0; height: 0" ref="extRef"></div>
+    <div class="image-err-extra" ref="extRef"></div>
   </NodeViewWrapper>
 </template>
 
@@ -68,14 +68,24 @@ const translate = {
   '-180': 'translate(-100%,-100%)',
   '-270': 'translate(0,-100%)',
 };
+const isInTable = (ele) => {
+  if (ele.nodeName === 'TD') return true;
+  else if (ele.className.includes('ProseMirror')) return false;
+  else return ele.parentElement ? isInTable(ele.parentElement) : false;
+};
 
 const isLoaded = ref(false);
 function handleImgLoad(e) {
   isLoaded.value = true;
   // 图片最大 100%
-  const maxW = props.editor.view.dom.clientWidth;
   const imgW = e.target.clientWidth;
-  if (imgW > maxW) {
+  let maxW = props.editor.view.dom.clientWidth;
+  if (isInTable(e.target)) {
+    maxW = e.target.parentElement.parentElement.clientWidth;
+    if (maxW - imgW < 5) return props.updateAttributes({ width: `100%` });
+  }
+  // 不在表格内，使用原逻辑
+  else if (imgW >= maxW) {
     props.updateAttributes({ width: `${maxW}px` });
   }
 }
